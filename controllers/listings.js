@@ -46,8 +46,14 @@ module.exports.renderUpdate = async (req, res) => {
 
 module.exports.putUpdate = async (req, res) => {
   let id = req.params.id;
-  let url = req.body.listing.image;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  let updatedListing = await Listing.findByIdAndUpdate(id, {
+    ...req.body.listing,
+  });
+  if (typeof req.file !== typeof "undefined") {
+    let { path, filename } = req.file;
+    updatedListing.image = { url: path, filename };
+    updatedListing.save();
+  }
   req.flash("sucess", " Lisiting Updated");
   res.redirect(`/listings/${id}`);
 };

@@ -7,6 +7,7 @@
       action="/listings/<%=prevData._id%>?_method=PUT"
       novalidate
       class="needs-validation"
+      enctype="multipart/form-data"
     >
       <div class="mb-3">
         <label for="title" class="form-label">Enter title</label>
@@ -33,13 +34,7 @@
       </div>
       <div class="mb-3">
         <label for="image" class="form-label">image</label>
-        <input
-          type="text"
-          name="listing[image]"
-          value="<%=prevData.image.url%> "
-          class="form-control"
-          required
-        />
+        <input type="file" name="listing[image]" class="form-control" />
         <div class="invalid-feedback">url/link cannot be empty.</div>
       </div>
 
