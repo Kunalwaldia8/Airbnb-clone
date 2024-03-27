@@ -4,7 +4,13 @@
     <br />
     <h3>New Listings</h3>
     <br />
-    <form method="POST" action="/listings" class="needs-validation" novalidate>
+    <form
+      method="POST"
+      action="/listings"
+      class="needs-validation"
+      novalidate
+      enctype="multipart/form-data"
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Enter title</label>
         <input
@@ -31,7 +37,7 @@
 
       <div class="mb-3">
         <label for="image" class="form-label">image</label>
-        <input name="listing[image]" type="text" class="form-control" />
+        <input name="listing[image]" type="file" class="form-control" />
         <div class="invalid-feedback">url/link cannot be empty.</div>
       </div>
 

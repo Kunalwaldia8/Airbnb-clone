@@ -11,8 +11,10 @@ module.exports.renderCreate = async (req, res) => {
 };
 
 module.exports.postCreate = async (req, res, next) => {
+  let { path, filename } = req.file;
   let newList = new Listing(req.body.listing);
   newList.owner = req.user;
+  newList.image = { url: path, filename };
   await newList.save();
   req.flash("sucess", "New Lisiting added!");
   res.redirect("/listings");
@@ -44,6 +46,7 @@ module.exports.renderUpdate = async (req, res) => {
 
 module.exports.putUpdate = async (req, res) => {
   let id = req.params.id;
+  let url = req.body.listing.image;
   await Listing.findByIdAndUpdate(id, { ...req.body.listing });
   req.flash("sucess", " Lisiting Updated");
   res.redirect(`/listings/${id}`);

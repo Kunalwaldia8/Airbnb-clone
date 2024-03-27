@@ -6,18 +6,15 @@ const Listing = require("../modles/listing.js");
 const { isLogedIn, isOwned, validateListing } = require("../middelware.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const { storage } = require("../cloudConfig.js");
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 router
   .route("/")
   .get(wrapAsync(listingController.index))
-  .post(validateListing, wrapAsync(listingController.postCreate));
-// .post(
-//   (upload.single("listing[image]"),
-//   (req, res) => {
-//     console.log(req.file);
-//     res.send("done");
-//   })
-// );
+  .post(
+    upload.single("listing[image]"),
+    validateListing,
+    wrapAsync(listingController.postCreate)
+  );
 //create route
 router.get("/new", isLogedIn, wrapAsync(listingController.renderCreate));
 
