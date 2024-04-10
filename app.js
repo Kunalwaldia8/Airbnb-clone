@@ -4,7 +4,9 @@ const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
 const ExpressError = require("./utils/ExpressError.js");
+
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const listingRouter = require("./routes/listings.js");
 const reviewRouter = require("./routes/review.js");
@@ -12,7 +14,9 @@ const user = require("./modles/user.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const userRouter = require("./routes/user.js");
-
+const password = encodeURIComponent("#Kunal8@");
+const uri = `mongodb+srv://kunalwaldia81:${password}@cluster0.f1xsf4c.mongodb.net/`;
+// const uri = process.env.uri;
 var methodOverride = require("method-override");
 engine = require("ejs-mate");
 
@@ -33,10 +37,19 @@ main()
   });
 
 async function main() {
-  await mongoose.connect(mongo_Url);
+  await mongoose.connect(uri);
 }
 
+let store = MongoStore.create({
+  crypto: {
+    secret: "mysecretecode",
+  },
+  mongoUrl: uri,
+  ttl: 14 * 24 * 60 * 60,
+});
+
 let sessionOptions = {
+  store,
   secret: "mysecretecode",
   resave: false,
   saveUninitialized: true,
@@ -46,10 +59,6 @@ let sessionOptions = {
     httpOnly: true,
   },
 };
-
-app.get("/", (req, res) => {
-  res.send("i am root");
-});
 
 app.use(session(sessionOptions));
 app.use(flash());

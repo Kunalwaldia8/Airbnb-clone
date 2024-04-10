@@ -5,6 +5,8 @@ body {
     min-height: 100vh;
 }
 
+
+
 .container {
     flex: 1;
 }
@@ -106,4 +108,9 @@ body {
 
 .buttons {
     display: flex;
+}
+
+#map {
+    height: 50vh;
+    width: 40vw;
 }

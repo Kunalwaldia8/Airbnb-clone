@@ -1,5 +1,9 @@
 const Listing = require("../modles/listing.js");
 const review = require("../modles/reviews.js");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const MapToken = process.env.MAP_TOKEN;
+
+const geocodingClient = mbxGeocoding({ accessToken: MapToken });
 
 module.exports.index = async (req, res) => {
   let listing = await Listing.find();
@@ -11,10 +15,17 @@ module.exports.renderCreate = async (req, res) => {
 };
 
 module.exports.postCreate = async (req, res, next) => {
+  let geocodingCordinates = await geocodingClient
+    .forwardGeocode({
+      query: req.body.listing.location,
+      limit: 1,
+    })
+    .send();
   let { path, filename } = req.file;
   let newList = new Listing(req.body.listing);
   newList.owner = req.user;
   newList.image = { url: path, filename };
+  newList.geometry = geocodingCordinates.body.features[0].geometry;
   await newList.save();
   req.flash("sucess", "New Lisiting added!");
   res.redirect("/listings");
@@ -41,7 +52,9 @@ module.exports.renderUpdate = async (req, res) => {
     req.flash("error", "Listing you requested does not exist!!");
     res.redirect("/listings");
   }
-  res.render("listings/edit.ejs", { prevData });
+  let originalUrl = prevData.image.url;
+  originalUrl = originalUrl.replace("/upload", "/upload/w_250");
+  res.render("listings/edit.ejs", { prevData, originalUrl });
 };
 
 module.exports.putUpdate = async (req, res) => {
@@ -49,7 +62,7 @@ module.exports.putUpdate = async (req, res) => {
   let updatedListing = await Listing.findByIdAndUpdate(id, {
     ...req.body.listing,
   });
-  if (typeof req.file !== typeof "undefined") {
+  if (typeof req.file !== "undefined") {
     let { path, filename } = req.file;
     updatedListing.image = { url: path, filename };
     updatedListing.save();
