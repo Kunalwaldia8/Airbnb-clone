@@ -1,4 +1,4 @@
-Airbnb Clone
+<p style="font-size:20px;">This is some larger text.</p>
 Welcome to the Airbnb Clone project! This project aims to replicate the core functionalities of the popular Airbnb platform, allowing users to search for and book accommodations.
 
 Table of Contents
